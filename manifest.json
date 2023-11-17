@@ -2,7 +2,7 @@
     "name": "Tab shuffle",
     "version": "1.0",
     "description": "Shuffle tabs",
-    "permissions": ["tabs", "activeTab", "declarativeContent", "notifications"],
+    "permissions": ["tabs", "activeTab", "declarativeContent", "notifications", "storage"],
     "background": {
         "persistent": false,
         "scripts": ["background.js"]

@@ -1,17 +1,37 @@
-// Handle extension icon click
-chrome.browserAction.onClicked.addListener(function(tab) {
-    chrome.tabs.query({currentWindow: true}, function(tabs) {
-        // Shuffle the tabs array
-        shuffle(tabs);
 
-        // For each tab in random order (iteration over shuffled array), set its position to 0
-        tabs.forEach(function (t) {
-            chrome.tabs.move(t.id, {index: 0});
+// Handle extension icon click
+chrome.browserAction.onClicked.addListener(async function(tab) {
+    const state = await getState();
+
+    if(state && state.active){
+        if(state.tick) clearInterval(state.tick);
+        notify('Stopped');
+    } else {
+        notify('Started');
+        setState({ active: true, tick: 0 });
+        chrome.tabs.query({currentWindow: true}, function(tabs) {
+            // Shuffle the tabs array
+            shuffle(tabs);
+    
+            // For each tab in random order (iteration over shuffled array), set its position to 0
+            tabs.forEach(function (t) {
+                chrome.tabs.move(t.id, {index: 0});
+            });
         });
-        notify("Lolilol, tabs shuffled")
-    });
+    }
 });
 
+function getState(){
+    return new Promise((resolve) => {
+        chrome.storage.local.get('state', function(result){
+            resolve(result.state);
+        })
+    })
+}
+
+function setState(newState){
+    chrome.storage.local.set('state', newState)
+}
 
 /**
  * Create a notification
