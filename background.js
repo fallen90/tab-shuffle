@@ -17,9 +17,15 @@ chrome.browserAction.onClicked.addListener(async function(tab) {
             tabs.forEach(function (t) {
                 chrome.tabs.move(t.id, {index: 0});
             });
-        });
+
+            const newActive = tabs[getRnd(0, tabs.length-1)]
+            chrome.tabs.update(newActive.id, { selected: true });
     }
 });
+
+function getRnd(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) ) + min;
+}
 
 function getState(){
     return new Promise((resolve) => {
